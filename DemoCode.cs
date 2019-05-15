@@ -65,7 +65,7 @@ namespace ***.Controllers.Api
             return result;
         }
         /// <summary>
-        /// Invite candidate to *** - Podium365 systems
+        /// Invite candidate to *** - *** systems
         /// </summary>
         /// <param name="param2">Candidate Infos</param>
         /// <returns></returns>
@@ -138,7 +138,7 @@ namespace ***.Controllers.Api
             foreach (var detail in assignCandidate)
             {
                 //var invId = detail["InvitationId"];
-                PsylabWebhookResult psylab = new PsylabWebhookResult()
+                ***WebhookResult *** = new ***WebhookResult()
                 {
                     InvitationCode = invitationCode,
                     ***ParticipantId = participantId,
@@ -148,9 +148,9 @@ namespace ***.Controllers.Api
                     ***TestId = detail["testId"]
                 };
 
-                _context.PsylabWebhookResults.Add(psylab);
+                _context.***WebhookResults.Add(***);
             }
-            PsylabWebhookResult psylab1 = new PsylabWebhookResult()
+           ***WebhookResult ***1 = new ***WebhookResult()
             {
                 InvitationCode = invitationCode,
                 ***ParticipantId = participantId,
@@ -163,7 +163,7 @@ namespace ***.Controllers.Api
                 WebhookInvokeDate = DateTime.Now
             };
 
-            _context.PsylabWebhookResults.Add(psylab1);
+            _context.***WebhookResults.Add(***1);
             _context.SaveChanges();
 
             return participantAssessmentUrl ?? "";
@@ -177,10 +177,10 @@ namespace ***.Controllers.Api
         /// {
         ///"event": "testCompleted",
         ///"timeStamp": "2019-01-20T11:07:15.1077954Z",
-        ///"participantId": "12-3-c57ffc13-7f62-4eb7-b7c8-8d38ad11acc2",
+        ///"participantId": "12-3-c57ffc13-7f62-4eb7-b7c8-***",
         ///"integrationPartnerParticipantId": "partner-id-12342",
-        ///"invitationId": "327677cb-a539-4a2f-af1f-d72e603e9072",
-        ///"testId": "PERSPECTIVES90"
+        ///"invitationId": "327677cb-a539-4a2f-af1f-***",
+        ///"testId": "***"
         ///}
         /// </param>
         /// <returns> status </returns>
@@ -203,7 +203,7 @@ namespace ***.Controllers.Api
                 var ***TestId = details["testId"] != null ? details["testId"].ToString() : "";
                 var invitationCode = details["integrationPartnerParticipantId"] != null ? details["integrationPartnerParticipantId"].ToString() : "";
 
-                var ***WebhookResult = _context.PsylabWebhookResults.SingleOrDefault(x => x.InvitationCode == invitationCode && x.***TestId == ***TestId && x.***InvitationId == ***InvitationId);
+                var ***WebhookResult = _context.***WebhookResults.SingleOrDefault(x => x.InvitationCode == invitationCode && x.***TestId == ***TestId && x.***InvitationId == ***InvitationId);
 
                 ***WebhookResult.TimeStamp = TimeStamp;
                 ***WebhookResult.***ParticipantId = ***ParticipantId;
@@ -223,7 +223,7 @@ namespace ***.Controllers.Api
                 _context.Logs.Add(log);
                 _context.SaveChanges();
 
-                var ***OtherHooks = _context.PsylabWebhookResults.Where(x => x.InvitationCode == invitationCode && x.***Event == null);
+                var ***OtherHooks = _context.***WebhookResults.Where(x => x.InvitationCode == invitationCode && x.***Event == null);
                 var invitationCodeGuid = new Guid(invitationCode);
                 var inv = _context.Invitations.SingleOrDefault(x => x.InvitationCode == invitationCodeGuid);
                 if (***OtherHooks == null || ***OtherHooks.Count() < 1)
@@ -258,21 +258,19 @@ namespace ***.Controllers.Api
 
         public dynamic GetResultAndReport(string invitationCode = "", string ***InvitationId = "")
         {
-            //var token = "ew0KICAiYWxnIjogIkhTNTEyIiwNCiAgInR5cCI6ICJKV1QiDQp9.ew0KICAibmFtZWlkIjogIjMiLA0KICAidW5pcXVlX25hbWUiOiAicGVvcGxpc2UiLA0KICAicm9sZSI6ICJJbnRlZ3JhdGlvblBhcnRuZXIiLA0KICAibmJmIjogMTU0OTM2NjUyOSwNCiAgImV4cCI6IDE1NDkzNzAxMjksDQogICJpYXQiOiAxNTQ5MzY2NTI5DQp9.kBSunmILPGrkGdN42hq-8qUgARDCj6Hhoh-K8_MtJpysNe-aX_v9DJbaR9E4SM0P7m7xWM5mFymO-CydBR6sAA";
-            //GetResult("B4AE315A-CB9B-4375-98C4-52A678BD1261", "12-3-3bc199e3-aa1f-4c02-b7d7-3e3a4ff4d154", token, 4058);  
-            var isPERSPECTIVES90 = false;
+           var isPERSPECTIVES90 = false;
 
             if (!string.IsNullOrEmpty(invitationCode) && !string.IsNullOrEmpty(***InvitationId))
             {
-                var resetResults = _context.PsylabWebhookResults.Where(x => x.InvitationCode == invitationCode);
+                var resetResults = _context.***WebhookResults.Where(x => x.InvitationCode == invitationCode);
                 foreach(var reset in resetResults)
                 {
-                    reset.PsylabResultId = null;
+                    reset.***ResultId = null;
                     _context.Entry(reset).State = EntityState.Modified;
                 }
                 _context.SaveChanges();
             }
-            var results = _context.PsylabWebhookResults.Where(x => x.PsylabResultId == null && x.WebhookInvokeDate != null);
+            var results = _context.***WebhookResults.Where(x => x.***ResultId == null && x.WebhookInvokeDate != null);
             if (!string.IsNullOrEmpty(invitationCode))
             {
                 isPERSPECTIVES90 = true;
@@ -314,12 +312,12 @@ namespace ***.Controllers.Api
                         continue;
                     }
 
-                    result.PsylabResultId = int.Parse(resultList[0].ToString());
+                    result.***ResultId = int.Parse(resultList[0].ToString());
                     _context.Entry(result).State = EntityState.Modified;
                     _context.SaveChanges();
 
-                    var resultIdList = _context.PsylabWebhookResults.Where(x => x.InvitationCode == inv.InvitationCode.ToString()).Select(x => x.PsylabResultId).ToList();
-                    var scoreList = _context.PsylabResultScores.Include(x => x.PsylabResult).Where(x=>x.PsylabResult.invitationId == inv.Id && x.PsylabResult.***TestId != "PERSPECTIVES90" && x.PsylabResult.***TestId != "RoleProfile" && resultIdList.Contains(x.PsylabResultId));
+                    var resultIdList = _context.***WebhookResults.Where(x => x.InvitationCode == inv.InvitationCode.ToString()).Select(x => x.***ResultId).ToList();
+                    var scoreList = _context.***ResultScores.Include(x => x.***Result).Where(x=>x.***Result.invitationId == inv.Id && x.***Result.***TestId != "PERSPECTIVES90" && x.***Result.***TestId != "RoleProfile" && resultIdList.Contains(x.***ResultId));
                     var candidateFinalScore = 0.0;
                     var candidateScoreCounter = 0;
                     foreach(var score in scoreList)
@@ -351,9 +349,9 @@ namespace ***.Controllers.Api
 
                     if (result.***TestId == "PERSPECTIVES90")
                     {
-                        var psylabReportUrl = GetReport(generalUrl, token, participantIdsList, result.***ClientId, reportBundleId, reportIdsList, normIdsList);
+                        var ***ReportUrl = GetReport(generalUrl, token, participantIdsList, result.***ClientId, reportBundleId, reportIdsList, normIdsList);
 
-                        inv.CentralTestHRReportLink = psylabReportUrl;
+                        inv.CentralTestHRReportLink = ***ReportUrl;
                     }
                 }
                 catch (Exception ex)
@@ -403,7 +401,7 @@ namespace ***.Controllers.Api
 
             var generalUrl = new AssessmentAdditionalSettingsHelper(_context).GetAssessmentAdditionalSetting(assessmentId, "url");
             var resultUrl = generalUrl + "clients/" + clientId + "/participants/" + participantId + "/results" + UrlTestIds + "normId=" + normId;
-            int psylabResultId = 0;
+            int ***ResultId = 0;
             double totalScore = 0;
             int scoreCount = 0;
             double standardScore = 0.0;
@@ -415,43 +413,43 @@ namespace ***.Controllers.Api
                 {
                     if (testId == result["testId"].ToString())
                     {
-                        PsylabResult psylabResult = new PsylabResult()
+                        ***Result ***Result = new ***Result()
                         {
                             ***TestId = result["testId"],
                             CompletionDate = result["completionDate"],
-                            PsylabParticipantId = APIresult["participantId"],
-                            PsylabClientId = APIresult["clientId"],
-                            PsylabIntegrationPartnerId = APIresult["integrationPartnerId"],
-                            PsylabIntegrationPartnerParticipantId = APIresult["integrationPartnerParticipantId"],
+                            ***ParticipantId = APIresult["participantId"],
+                            ***ClientId = APIresult["clientId"],
+                            ***IntegrationPartnerId = APIresult["integrationPartnerId"],
+                            ***IntegrationPartnerParticipantId = APIresult["integrationPartnerParticipantId"],
                             invitationId = invitationId
                         };
-                        _context.PsylabResults.Add(psylabResult);
+                        _context.***Results.Add(***Result);
                         _context.SaveChanges();
 
-                        psylabResultId = psylabResult.id;
+                        ***ResultId = ***Result.id;
 
                         var scores = result["scores"];
                         foreach (var score in scores)
                         {
                             var eapScore = "";
                             try { eapScore = score["eap"]; } catch (Exception ex) { }
-                            PsylabResultScore psylabResultScore = new PsylabResultScore()
+                            ***ResultScore ***ResultScore = new ***ResultScore()
                             {
-                                PsylabResultId = psylabResultId,
-                                ***caleId = psylabResult.***TestId + "-" + score["scaleId"],
-                                PsylabPercentileScore = score["percentileScore"],
-                                PsylabRawScore = score["rawScore"],
+                                ***ResultId = ***ResultId,
+                                ***caleId = ***Result.***TestId + "-" + score["scaleId"],
+                                ***PercentileScore = score["percentileScore"],
+                                ***RawScore = score["rawScore"],
                                 ***tandardisedScore = score["standardisedScore"],
-                                PsylabEap = eapScore
+                                ***Eap = eapScore
                             };
                             //if (testId != "PERSPECTIVES90")
                             if (testId.Contains("GCAT"))
                             {
-                                totalScore += Double.Parse(psylabResultScore.***tandardisedScore);
+                                totalScore += Double.Parse(***ResultScore.***tandardisedScore);
                                 scoreCount++;
                             }
-                            _context.PsylabResultScores.Add(psylabResultScore);
-                            standardScore = psylabResultScore.***tandardisedScore != null? double.Parse(psylabResultScore.***tandardisedScore) : 0.0;
+                            _context.***ResultScores.Add(***ResultScore);
+                            standardScore = ***ResultScore.***tandardisedScore != null? double.Parse(***ResultScore.***tandardisedScore) : 0.0;
                         }
                         _context.SaveChanges();
                         break;
@@ -459,7 +457,7 @@ namespace ***.Controllers.Api
                 }
             }
             totalScore = totalScore / (scoreCount < 1 ? 1 : scoreCount);
-            List<double> scoreList = new List<double>(new double[] { psylabResultId, totalScore, standardScore });
+            List<double> scoreList = new List<double>(new double[] { ***ResultId, totalScore, standardScore });
             return scoreList;
         }
 
@@ -491,7 +489,7 @@ namespace ***.Controllers.Api
 
 
                 var directory = ConfigurationManager.AppSettings["FileUploadBase"] + "\\" + "\\" +
-                                "PsylabReports\\";
+                                "***Reports\\";
 
                 System.IO.FileStream stream =
                        new FileStream(@"" + directory + invitationCode + ".zip", FileMode.CreateNew);
@@ -502,7 +500,7 @@ namespace ***.Controllers.Api
 
                 var reportUrl = ConfigurationManager.AppSettings["ApplicationRoot"] + "/" +
                         ConfigurationManager.AppSettings["FileUploadVirtualDirectoryAddendum"] +
-                        "/PsylabReports/" + invitationCode + ".zip";
+                        "/***Reports/" + invitationCode + ".zip";
                 return reportUrl;
             }
             catch (Exception ex)
